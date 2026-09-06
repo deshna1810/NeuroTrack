@@ -1,180 +1,359 @@
-import { Image } from 'expo-image';
-import { SymbolView } from 'expo-symbols';
-import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React from 'react';
+import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
+import Svg, { Path, Circle } from 'react-native-svg';
 
-import { ExternalLink } from '@/components/external-link';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Collapsible } from '@/components/ui/collapsible';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+const COLORS = {
+  bg: '#080B0D',
+  textPrimary: '#F2F0E8',
+  textSecondary: '#737A7D',
+  textDim: '#3F4648',
+  cyan: '#00E5F5',
+  green: '#38E89B',
+  border: '#20282B',
+};
 
-export default function TabTwoScreen() {
-  const safeAreaInsets = useSafeAreaInsets();
-  const insets = {
-    ...safeAreaInsets,
-    bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,
+function MotionIcon() {
+  return (
+    <Svg width={40} height={20} viewBox="0 0 40 20">
+      <Path
+        d="M0,10 L10,10 L14,3 L18,17 L22,6 L25,10 L40,10"
+        stroke={COLORS.cyan}
+        strokeWidth={1.2}
+        fill="none"
+      />
+    </Svg>
+  );
+}
+
+function SpiralIcon() {
+  return (
+    <Svg width={22} height={22} viewBox="0 0 22 22">
+      <Path
+        d="M11,11 
+           m0,-1 
+           a1,1 0 1,1 -1,1 
+           a3,3 0 1,0 3,-3 
+           a5,5 0 1,1 -5,5 
+           a7,7 0 1,0 7,-7"
+        stroke={COLORS.green}
+        strokeWidth={1.1}
+        fill="none"
+        strokeLinecap="round"
+      />
+    </Svg>
+  );
+}
+
+function TappingIcon() {
+  const dots = [0, 1, 2, 3, 4];
+  return (
+    <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>
+      {dots.map((d) => (
+        <View
+          key={d}
+          style={{
+            width: 4,
+            height: 4,
+            borderRadius: 2,
+            backgroundColor: d === 2 ? COLORS.cyan : COLORS.textDim,
+          }}
+        />
+      ))}
+    </View>
+  );
+}
+
+export default function ExploreScreen() {
+  const router = useRouter();
+
+  const handleContinue = () => {
+    router.push('/motion-instructions');
   };
-  const theme = useTheme();
-
-  const contentPlatformStyle = Platform.select({
-    android: {
-      paddingTop: insets.top,
-      paddingLeft: insets.left,
-      paddingRight: insets.right,
-      paddingBottom: insets.bottom,
-    },
-    web: {
-      paddingTop: Spacing.six,
-      paddingBottom: Spacing.four,
-    },
-  });
 
   return (
-    <ScrollView
-      style={[styles.scrollView, { backgroundColor: theme.background }]}
-      contentInset={insets}
-      contentContainerStyle={[styles.contentContainer, contentPlatformStyle]}>
-      <ThemedView style={styles.container}>
-        <ThemedView style={styles.titleContainer}>
-          <ThemedText type="subtitle">Explore</ThemedText>
-          <ThemedText style={styles.centerText} themeColor="textSecondary">
-            This starter app includes example{'\n'}code to help you get started.
-          </ThemedText>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+          <Text style={styles.logo}>NEUROTRACK</Text>
+          <Text style={styles.headerIndex}>02 / 04</Text>
+        </View>
+        <View style={styles.headerDivider} />
 
-          <ExternalLink href="https://docs.expo.dev" asChild>
-            <Pressable style={({ pressed }) => pressed && styles.pressed}>
-              <ThemedView type="backgroundElement" style={styles.linkButton}>
-                <ThemedText type="link">Expo documentation</ThemedText>
-                <SymbolView
-                  tintColor={theme.text}
-                  name={{ ios: 'arrow.up.right.square', android: 'link', web: 'link' }}
-                  size={12}
-                />
-              </ThemedView>
-            </Pressable>
-          </ExternalLink>
-        </ThemedView>
+        {/* MAIN TITLE */}
+        <View style={styles.heroBlock}>
+          <Text style={styles.heroLine}>ASSESSMENT</Text>
+          <Text style={[styles.heroLine, styles.heroLineAccent]}>
+            PROTOCOL
+          </Text>
+        </View>
+        <Text style={styles.subtitle}>
+          Three short tests. One movement profile.
+        </Text>
 
-        <ThemedView style={styles.sectionsWrapper}>
-          <Collapsible title="File-based routing">
-            <ThemedText type="small">
-              This app has two screens: <ThemedText type="code">src/app/index.tsx</ThemedText> and{' '}
-              <ThemedText type="code">src/app/explore.tsx</ThemedText>
-            </ThemedText>
-            <ThemedText type="small">
-              The layout file in <ThemedText type="code">src/app/_layout.tsx</ThemedText> sets up
-              the tab navigator.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/router/introduction">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
+        {/* TEST 01 — MOTION */}
+        <View style={styles.divider} />
+        <View style={styles.testRow}>
+          <Text style={styles.testNumber}>01</Text>
+          <View style={styles.testBody}>
+            <View style={styles.testTitleRow}>
+              <Text style={styles.testTitle}>MOTION</Text>
+              <Text style={styles.testDuration}>10 SEC</Text>
+            </View>
+            <View style={styles.testDescRow}>
+              <Text style={styles.testDesc}>
+                Measures movement{'\n'}through your phone&apos;s{'\n'}motion
+                sensors.
+              </Text>
+              <MotionIcon />
+            </View>
+          </View>
+        </View>
 
-          <Collapsible title="Android, iOS, and web support">
-            <ThemedView type="backgroundElement" style={styles.collapsibleContent}>
-              <ThemedText type="small">
-                You can open this project on Android, iOS, and the web. To open the web version,
-                press <ThemedText type="smallBold">w</ThemedText> in the terminal running this
-                project.
-              </ThemedText>
-              <Image
-                source={require('@/assets/images/tutorial-web.png')}
-                style={styles.imageTutorial}
-              />
-            </ThemedView>
-          </Collapsible>
+        {/* TEST 02 — SPIRAL */}
+        <View style={styles.divider} />
+        <View style={styles.testRow}>
+          <Text style={styles.testNumber}>02</Text>
+          <View style={styles.testBody}>
+            <View style={styles.testTitleRow}>
+              <Text style={styles.testTitle}>SPIRAL</Text>
+              <Text style={styles.testDuration}>~30 SEC</Text>
+            </View>
+            <View style={styles.testDescRow}>
+              <Text style={styles.testDesc}>
+                Trace the spiral{'\n'}as accurately as{'\n'}you can.
+              </Text>
+              <SpiralIcon />
+            </View>
+          </View>
+        </View>
 
-          <Collapsible title="Images">
-            <ThemedText type="small">
-              For static images, you can use the <ThemedText type="code">@2x</ThemedText> and{' '}
-              <ThemedText type="code">@3x</ThemedText> suffixes to provide files for different
-              screen densities.
-            </ThemedText>
-            <Image source={require('@/assets/images/react-logo.png')} style={styles.imageReact} />
-            <ExternalLink href="https://reactnative.dev/docs/images">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
+        {/* TEST 03 — TAPPING */}
+        <View style={styles.divider} />
+        <View style={styles.testRow}>
+          <Text style={styles.testNumber}>03</Text>
+          <View style={styles.testBody}>
+            <View style={styles.testTitleRow}>
+              <Text style={styles.testTitle}>TAPPING</Text>
+              <Text style={styles.testDuration}>10 SEC</Text>
+            </View>
+            <View style={styles.testDescRow}>
+              <Text style={styles.testDesc}>
+                Tap repeatedly to{'\n'}measure movement{'\n'}consistency.
+              </Text>
+              <TappingIcon />
+            </View>
+          </View>
+        </View>
+        <View style={styles.divider} />
 
-          <Collapsible title="Light and dark mode components">
-            <ThemedText type="small">
-              This template has light and dark mode support. The{' '}
-              <ThemedText type="code">useColorScheme()</ThemedText> hook lets you inspect what the
-              user&apos;s current color scheme is, and so you can adjust UI colors accordingly.
-            </ThemedText>
-            <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-              <ThemedText type="linkPrimary">Learn more</ThemedText>
-            </ExternalLink>
-          </Collapsible>
+        {/* ESTIMATED TIME */}
+        <Text style={styles.estimatedTime}>ESTIMATED TIME · 1 MIN</Text>
 
-          <Collapsible title="Animations">
-            <ThemedText type="small">
-              This template includes an example of an animated component. The{' '}
-              <ThemedText type="code">src/components/ui/collapsible.tsx</ThemedText> component uses
-              the powerful <ThemedText type="code">react-native-reanimated</ThemedText> library to
-              animate opening this hint.
-            </ThemedText>
-          </Collapsible>
-        </ThemedView>
-        {Platform.OS === 'web' && <WebBadge />}
-      </ThemedView>
-    </ScrollView>
+        {/* CONTINUE CTA */}
+        <Pressable style={styles.ctaButton} onPress={handleContinue}>
+          <Text style={styles.ctaText}>CONTINUE</Text>
+          <Text style={styles.ctaArrow}>→</Text>
+        </Pressable>
+      </ScrollView>
+
+      {/* BOTTOM NAVIGATION (visual only) */}
+      <View style={styles.bottomNav}>
+        <View style={styles.navItem}>
+          <Text style={[styles.navIcon, styles.navIconActive]}>⊞</Text>
+          <Text style={[styles.navLabel, styles.navLabelActive]}>
+            OVERVIEW
+          </Text>
+        </View>
+        <View style={styles.navItem}>
+          <Text style={styles.navIcon}>⌁</Text>
+          <Text style={styles.navLabel}>TELEMETRY</Text>
+        </View>
+        <View style={styles.navItem}>
+          <Text style={styles.navIcon}>⚙</Text>
+          <Text style={styles.navLabel}>DIAGNOSTICS</Text>
+        </View>
+        <View style={styles.navItem}>
+          <Text style={styles.navIcon}>▤</Text>
+          <Text style={styles.navLabel}>RECORDS</Text>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.bg,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 24,
+  },
+
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  logo: {
+    fontSize: 14,
+    fontWeight: '700',
+    letterSpacing: 1,
+    color: COLORS.textPrimary,
+    fontFamily: 'serif',
+  },
+  headerIndex: {
+    fontSize: 9,
+    letterSpacing: 1,
+    color: COLORS.textDim,
+  },
+  headerDivider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+    marginBottom: 26,
+  },
+
+  heroBlock: {
+    marginBottom: 8,
+  },
+  heroLine: {
+    fontFamily: 'serif',
+    fontSize: 34,
+    lineHeight: 34,
+    fontWeight: '400',
+    letterSpacing: -0.5,
+    color: COLORS.textPrimary,
+    textTransform: 'uppercase',
+  },
+  heroLineAccent: {
+    color: '#E8F4F2',
+  },
+  subtitle: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: COLORS.textSecondary,
+    marginBottom: 20,
+  },
+
+  divider: {
+    height: 1,
+    backgroundColor: COLORS.border,
+  },
+
+  testRow: {
+    flexDirection: 'row',
+    paddingVertical: 20,
+    gap: 14,
+  },
+  testNumber: {
+    fontFamily: 'serif',
+    fontSize: 28,
+    color: COLORS.textDim,
+    width: 36,
+  },
+  testBody: {
     flex: 1,
   },
-  contentContainer: {
+  testTitleRow: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    marginBottom: 8,
   },
-  container: {
-    maxWidth: MaxContentWidth,
-    flexGrow: 1,
+  testTitle: {
+    fontSize: 15,
+    fontWeight: '700',
+    letterSpacing: 1,
+    color: COLORS.textPrimary,
+    textTransform: 'uppercase',
   },
-  titleContainer: {
-    gap: Spacing.three,
-    alignItems: 'center',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.six,
+  testDuration: {
+    fontSize: 9,
+    letterSpacing: 0.6,
+    color: COLORS.textSecondary,
+    textTransform: 'uppercase',
   },
-  centerText: {
-    textAlign: 'center',
-  },
-  pressed: {
-    opacity: 0.7,
-  },
-  linkButton: {
+  testDescRow: {
     flexDirection: 'row',
-    paddingHorizontal: Spacing.four,
-    paddingVertical: Spacing.two,
-    borderRadius: Spacing.five,
-    justifyContent: 'center',
-    gap: Spacing.one,
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  sectionsWrapper: {
-    gap: Spacing.five,
-    paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.three,
+  testDesc: {
+    fontSize: 11,
+    lineHeight: 16,
+    color: COLORS.textSecondary,
+    flex: 1,
+    paddingRight: 12,
   },
-  collapsibleContent: {
+
+  estimatedTime: {
+    fontSize: 9,
+    letterSpacing: 0.8,
+    color: COLORS.textDim,
+    textTransform: 'uppercase',
+    marginTop: 24,
+    marginBottom: 12,
+  },
+
+  ctaButton: {
+    backgroundColor: COLORS.cyan,
+    borderRadius: 3,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
-  imageTutorial: {
-    width: '100%',
-    aspectRatio: 296 / 171,
-    borderRadius: Spacing.three,
-    marginTop: Spacing.two,
+  ctaText: {
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.8,
+    color: '#080B0D',
+    textTransform: 'uppercase',
   },
-  imageReact: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
+  ctaArrow: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#080B0D',
+  },
+
+  bottomNav: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    paddingTop: 10,
+    paddingBottom: 6,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.border,
+    backgroundColor: COLORS.bg,
+  },
+  navItem: {
+    alignItems: 'center',
+    gap: 4,
+  },
+  navIcon: {
+    fontSize: 16,
+    color: COLORS.textDim,
+  },
+  navIconActive: {
+    color: COLORS.cyan,
+  },
+  navLabel: {
+    fontSize: 8,
+    letterSpacing: 0.5,
+    color: COLORS.textDim,
+    textTransform: 'uppercase',
+  },
+  navLabelActive: {
+    color: COLORS.cyan,
   },
 });
